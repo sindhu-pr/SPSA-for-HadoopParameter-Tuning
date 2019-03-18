@@ -1,0 +1,37 @@
+This is a info about the files present in the folder.
+(The Spelling of scripts may change, so just check once before running)
+To run the experiment, run:
+
+./runExp.sh
+
+
+Detail info about the files present:
+
+// Independent of experiment
+
+runExp.sh: 		To run the experiment
+clusterInfo.sh:		It gathers the cluster info, which tells on which configuration the experiment where run.
+config.java:		This is the code which runs a single instance of the experiment, keeping in mind the concurrency issues and a timeout.
+exec_in_c.c: 		This is used to run the shell script from the Java Code. Java code passed the script it want to run to the c code and then this code executes it.
+finishTime.sh: 		This extracts the latest jobId and returns its finishTime, along with the Status of its exit, whether it succeded or failed.
+fwrit.m			Used by Octave code to write to a file
+killAllChild.sh:	This kills all Java Childs on all the Slave nodes. This is to make sure that not stray jobs are running on the node which might affect the execution of the experiment.
+punch.m:		This is used to write the new configuration value, on which the next experiment has to run in the file parameters_val.
+sim.m:			This is where SPSA logic is written. It calculates the new configuration based on the running time of the last experiment and then writes this to parameter_val using punch.m  for the next experiment. This runs till 50 iteration, which is hardcoded inside this. need to correct this.
+
+
+// Parameters related files. Independent of experimet
+
+parameters_val:		Initially this is empty. This is fulled during runtime by sim.m. It contains the value of different parameters which is to be used for the next experiment to run.
+par_def:		Initial, the default values of the parameters.
+par_maxval:		The upper range of the values that the parameters can take. Right now hardcoded, should depend on the machine configuration.
+par_minval:		The lower bound, this is also depended on the machine configuration. There has to be ample space so that spsa has some room to configure these values
+
+
+// Experiment Dependent
+
+init_setting:		This file contains the values relevant to the experiment, name of the experiment, location of the input file on the local machine, name of input and output location of the HDFS
+
+// Ouput of the Experiment
+
+grad_data.csv: 		This contains all the result, in One line, the first n-1 values correspond to the parameter values, in the order as given in the config_switch file. TODO Need to add the configuration of the Cluster and other info to the results file, as this will create a problem later when analyzing the results
